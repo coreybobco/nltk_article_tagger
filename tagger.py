@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import inflect
 import re
 import nltk
 
@@ -12,9 +13,11 @@ class Tagger_Class:
     return pos_tokens
 
   def group_proper_nouns(self, pos_tokens):
-    #Group nouns that occur right after each other as one word unit, i.e. "Associated Press", "news agency"
+    #Group nouns that occur right after each other as one word unit, i.e. "Associated Press", "news agency" and
+    #rebuild data structure while also providing separate list
     proper_noun_filter = ["NNP", "NNPS"]
     processed_pos_tokens = list()
+    multiword_proper_nouns = list()
     combo_token = ("","")
     for index, current_token in enumerate(pos_tokens):
       if index > 0:
@@ -33,7 +36,9 @@ class Tagger_Class:
           #   print(last_token)
           #   print(current_token)
           processed_pos_tokens.append(combo_token)
-    return processed_pos_tokens
+          if len(combo_token[0].split(" ")) > 1:
+            multiword_proper_nouns.append(combo_token[0])
+    return processed_pos_tokens, multiword_proper_nouns
 
   def filter(self, pos_tokens):
     #Filter out tokens (words, punctuation) by part of speech or by checking against list of tokens    
@@ -59,6 +64,7 @@ class Tagger_Class:
     articles = ["a", "an", "the", "these", "those"]
     linking_verbs = ["be", "is", "are", "am", "was", "were", "been", "being", "'re", "appear", "become", "feel", "grow", "look", "remain", "seem", "smell", "sound", "stay", "taste"]
     aux_verbs = ["have", "had", "having", "has", "does", "do", "did"]
+    abbreviations = ["Lt.", "Gov."]
     if token.lower() in punct_tokens or token in linking_verbs or token in aux_verbs or token in articles:
       return False
     else:
@@ -66,8 +72,9 @@ class Tagger_Class:
 
   def filter_pos(self, pos):
     '''POS filter will eliminate conjunctions, punctuation, prepositions, pronouns, determiners, modal auxiliary,
-       comparative adjectives, ordinal adjectives, adverbs(?), genitive marker ('s)'''
-    pos_filter = ["CC", ".", ",", "''", "``", "TO", "IN", "WDT", "WP", "PRP", "PRP$", "DT", "MD", "JJR", "WRB", "JJ", "RB", "POS"]
+       comparative/superlative adjectives, ordinal adjectives, genitive marker ('s), item markers, existential there, foreign word, adverbs(?), verbs.
+       For complete list open python3 console and nltk.help.upenn_tagset()'''
+    pos_filter = ["''", ',', '.', 'CC', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 'MD', 'PDT', 'POS', 'PRP', 'PRP$', 'RB', 'RP', 'TO', 'WDT', 'WP', 'WP$', 'WRB', '``']
     if pos in pos_filter:
       return False
     else:
@@ -75,9 +82,25 @@ class Tagger_Class:
 
   def tag(self, article):
     pos_tokens = self.classify_pos(article)
-    pos_tokens = self.group_proper_nouns(pos_tokens)
-    self.filter(pos_tokens)
+    filtered_pos_tokens, multiword_proper_nouns = self.group_proper_nouns(pos_tokens)
+    print(multiword_proper_nouns)
+    #filtered_pos_tokens = self.filter(filtered_pos_tokens)
 
-  def get_word_frequencies(self, pos_tokens)
+  def get_word_frequencies(self, pos_tokens, multiword_proper_nouns):
+    inflector = inflect.engine()
+    frequency_dictionary = {}
+    plural_noun_filter = ["NNS", "NNPS"]
+    for token in pos_tokens:
+      current_word = token[0]
+      if current_token[1] in plural_noun_filter:
+        current_word = inflector.singular_noun(current_word)
+        if len(token[0].split(" ")) > 1 and (token[1] == "NNP" or token[1] == "NNPS"):
+          # Check 
+      if current_token[0] in frequency_dictionary:
+        frequency_dictionary[current_token] += 1
+      else: 
+        frequency_dictionary
+
+
 
 

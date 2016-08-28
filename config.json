@@ -1,11 +1,11 @@
 {
 	"abbreviations": [
-		"Lt.",
-		"Gov.",
-		"Rep.",
-		"Reps.",
-		"Sen.",
-		"Sens."
+		"Lt",
+		"Gov",
+		"Rep",
+		"Reps",
+		"Sen",
+		"Sens"
 	],
 	"articles" : [
 		"a", 
@@ -33,17 +33,22 @@
 		"been", 
 		"being", 
 		"'re", 
-		"appear", 
+		"appear",
+		"appears", 
 		"become", 
+		"becomes",
 		"feel", 
+		"feels",
 		"grow", 
+		"grows",
 		"look", 
-		"remain", 
+		"looks",
+		"remain",
+		"remains", 
 		"seem", 
-		"smell", 
-		"sound", 
+		"seems",
 		"stay", 
-		"taste"
+		"stays"
 	],
 	"name_filter" : [
 		"Democrat",
@@ -52,6 +57,9 @@
 		"Gov.",
 		"GOP",
 		"House",
+		"Mr.",
+		"Mrs.",
+		"Ms.",
 		"Republican",
 		"Rep.",
 		"Reps.",
@@ -100,6 +108,9 @@
 		"—", 
 		":", 
 		"(", 
-		")"
+		")",
+		".",
+		";",
+		"?"
 	]
 }

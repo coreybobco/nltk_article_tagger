@@ -92,9 +92,9 @@ class Tagger_Class:
     For complete list open python3 console and nltk.help.upenn_tagset()'''
     pos_filter = self.config["pos_filter_parts"]
     if pos in pos_filter:
-      return False
-    else:
       return True
+    else:
+      return False
 
   def get_word_frequencies(self, pos_tokens, full_names):
     inflector = inflect.engine()

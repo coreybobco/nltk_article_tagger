@@ -46,12 +46,12 @@
 		"taste"
 	],
 	"name_filter" : [
-		"House",
 		"Democrat",
 		"Democratic",
 		"Lt.",
 		"Gov.",
 		"GOP",
+		"House",
 		"Republican",
 		"Rep.",
 		"Reps.",

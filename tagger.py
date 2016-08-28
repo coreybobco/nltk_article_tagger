@@ -41,10 +41,8 @@ class Tagger_Class:
           for word in noun_phrase_list_copy:
             if word in name_filter:
               noun_phrase_as_list.remove(word)
-          if len(noun_phrase_as_list) > 0 and noun_phrase_as_list[-1] in place_filter:
-            if (noun_phrase_as_list[-1] in place_filter):
-            # FIX THIS SHIT AND ADD IT TO THE PLACE LIST
             last_word = noun_phrase_as_list[-1]
+          if len(noun_phrase_as_list) > 0 and not noun_phrase_as_list[-1] in place_filter:
             if len(last_word) > 2 and last_word[-2:] == "'s":
               # Strip the 's from this name'
               noun_phrase_as_list[-1] = last_word[:-2]
@@ -100,7 +98,7 @@ class Tagger_Class:
   def get_word_frequencies(self, pos_tokens, full_names):
     inflector = inflect.engine()
     frequency_dict = {}
-    proper_noun_pos_list = ["NNP", "NNPS"]
+    proper_noun_pos_list = self.config['proper_noun_pos_list']
     for token in pos_tokens:
       added_to_dict = False
       current_word = token[0]
@@ -148,7 +146,7 @@ class Tagger_Class:
   def group_proper_nouns(self, pos_tokens):
     '''Group nouns that occur right after each other as one word unit, i.e. "Associated Press", "news agency" and rebuild data structure 
     while also providing separate list'''
-    proper_noun_filter = ["NNP", "NNPS"]
+    proper_noun_filter = self.config['proper_noun_pos_list']
     processed_pos_tokens = list()
     # multiword_proper_nouns = list()
     combo_token = ("","")

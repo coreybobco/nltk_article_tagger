@@ -78,6 +78,9 @@
 		"NNP",
 		"NNPS"
 	],
+	"proper_noun_pos_list": [
+		"NNP",
+		"NNPS"]
 	"punct_tokens" : [
 		"“", 
 		"”", 

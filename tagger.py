@@ -31,7 +31,6 @@ class Tagger_Class:
   def extract_names(self, pos_tokens):
     '''NLTK's name recognition will try to classify proper noun phrases as persons, organizations, places, or 'other' (GPE). However, it doesn't work that well except for persons, and I've added some additional rules to handle common misclassifications.'''
     name_recognition_tokens = nltk.ne_chunk(pos_tokens)
-    print(name_recognition_tokens)
     name_filter = self.config['name_filter'] 
     full_names = list()
     for token in name_recognition_tokens:
@@ -59,6 +58,7 @@ class Tagger_Class:
                   skip_adding_name = True
               if not skip_adding_name:
                 full_names.append(noun_phrase)
+    print(full_names)
     return full_names
 
   def filter_and_clean(self, pos_tokens):
@@ -70,7 +70,6 @@ class Tagger_Class:
       clean_token = (token[0].strip("".join(punct_tokens)), token[1])
       if self.filter_pos(token[1]) and self.filter_token(token[0]):
         filtered_pos_tokens.append(clean_token)
-        print(clean_token)
     return filtered_pos_tokens
 
   def filter_token(self, token):
@@ -117,7 +116,9 @@ class Tagger_Class:
       if not added_to_dict:
         #Normalize words by singularizing plural nouns and lowercase mixed case words before adding to frequency dict
         if current_word_pos == "NNS":
-          current_word = inflector.singular_noun(current_word)
+          singular_word = inflector.singular_noun(current_word)
+          if isinstance(singular_word, str):
+            current_word = singular_word
         if not current_word.isupper() and not current_word.islower():
           current_word = current_word[0].lower() + current_word[1:]
         if current_word in frequency_dict:

@@ -14,7 +14,7 @@ class Tagger_Class:
 
   def tag(self, article):
     pos_tokens = self.tokenize_part_of_speech(article)
-    full_names = self.extract_names(pos_tokens)
+    full_names = self.extract_persons(pos_tokens)
     pos_tokens = self.group_proper_nouns(pos_tokens)
     # filtered_pos_tokens, multiword_proper_nouns = self.group_proper_nouns(pos_tokens)
     filtered_pos_tokens = self.filter_and_clean(pos_tokens)
@@ -28,10 +28,11 @@ class Tagger_Class:
     for freq, wordlist in words_sorted_by_freq.items():
       print(freq)
 
-  def extract_names(self, pos_tokens):
+  def extract_persons(self, pos_tokens):
     '''NLTK's name recognition will try to classify proper noun phrases as persons, organizations, places, or 'other' (GPE). However, it doesn't work that well except for persons, and I've added some additional rules to handle common misclassifications.'''
     name_recognition_tokens = nltk.ne_chunk(pos_tokens)
     name_filter = self.config['name_filter'] 
+    place_filter = self.config['place_filter'] 
     full_names = list()
     for token in name_recognition_tokens:
       if not isinstance(token, tuple) and token.label() == "PERSON":
@@ -40,7 +41,8 @@ class Tagger_Class:
           for word in noun_phrase_list_copy:
             if word in name_filter:
               noun_phrase_as_list.remove(word)
-          if len(noun_phrase_as_list) > 0 and noun_phrase_as_list[-1] != "County":
+          if len(noun_phrase_as_list) > 0 and noun_phrase_as_list[-1] in place_filter:
+            if (noun_phrase_as_list[-1] in place_filter):
             # FIX THIS SHIT AND ADD IT TO THE PLACE LIST
             last_word = noun_phrase_as_list[-1]
             if len(last_word) > 2 and last_word[-2:] == "'s":

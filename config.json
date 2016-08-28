@@ -50,6 +50,10 @@
 		"stay", 
 		"stays"
 	],
+	"place_filter" : [
+		"City",
+		"County"
+	],
 	"name_filter" : [
 		"Democrat",
 		"Democratic",

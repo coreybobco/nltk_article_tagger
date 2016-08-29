@@ -99,6 +99,88 @@
 		";",
 		"?"
 	],
+	"tag_keyword_lists": {
+		"business": [
+			"business",
+			"company",
+			"finance",
+			"firm",
+			"revenue"
+		],
+		"election" : [
+			"Barack Obama",
+			"Donald Trump",
+			"Bill Clinton",
+			"Hillary Clinton",
+			"Rick Perry",
+			"Ted Cruz",
+			"ballot",
+			"candidate",
+			"election",
+			"incumbent",
+			"nominee",
+			"politician",
+			"poll",
+			"polling",
+			"primary",
+			"race",
+			"swing",
+			"teleprompter",
+			"vote",
+			"voter",
+			"voting",
+			"senate"
+		],
+		"environment": [
+			"earthquake",
+			"environment",
+			"EPA",
+			"regulation"
+		],
+		"guns": [
+			"handgun",
+			"gun",
+			"concealed"
+		],
+		"oil and gas": [
+			"drill",
+			"drilling",
+			"fracking",
+			"gas",
+			"oil",
+			"oilfield",
+			"Railroad Commission"
+		],
+		"school" : [
+			"admission",
+			"ACT",
+			"class",
+			"campus",
+			"faculty",
+			"SAT",
+			"school",
+			"student",
+			"teacher",
+			"university"
+		],
+		"technology": [
+			"mobile",
+			"tech",
+			"technology",
+			"web"
+		],
+		"transgender": [
+			"transgender",
+			"discrimination"
+		],
+		"voting rights": [
+			"ID",
+			"fraud",
+			"registration",
+			"Voting Rights Act",
+			"Civil Rights Act"
+		]
+	},
 	"texas_cities" : [
 		"Houston",
 		"San Antonio",

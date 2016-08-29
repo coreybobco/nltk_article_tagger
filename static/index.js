@@ -1,8 +1,8 @@
 onload = function(){
     var button = document.querySelector("button");
-    // var show_output = function() { 
-    //     //active_output.value = this.responseText;
-    // }
+    var show_output = function() { 
+        document.querySelector("#suggested_tags").value = this.responseText;
+    }
     button.onclick = function() {
         //Grab the values of which tabs the generator will pull input from
         var data = {}
@@ -11,7 +11,7 @@ onload = function(){
         data = JSON.stringify(data)
         var req = new XMLHttpRequest()
         // req.setRequestHeader("Content-type", "application/json");
-        // req.addEventListener("load", show_output)
+        req.addEventListener("load", show_output)
         req.open("post", "./tag", true)
         req.send(data)
     }

@@ -11,39 +11,61 @@ from nltk import wordnet
 class Tagger_Class:
   def __init__(self):
     self.config = json.load(open("config.json"))
+    self.cities = self.config['texas_cities']
+    self.counties = self.config['texas_counties']
     return
 
   def tag(self, article, title):
-    article_pos_tokens = self.tokenize_part_of_speech(article)
-    person_names = self.extract_persons(article_pos_tokens)
-    title_tags = self.get_title_tags(title, person_names)
-    body_tags = self.get_body_tags(article_pos_tokens, person_names)
-    # place_tags = self.get_place_tags(words_sorted_by_freq)
-    # topic_tags = self.get_topic_tags(words_sorted_by_freq)
+    body_pos_tokens = self.tokenize_part_of_speech(article)
+    self.person_names = self.extract_persons(body_pos_tokens)
+    self.title_tags = self.get_title_tags(title)
+    self.body_tags = self.get_body_tags(body_pos_tokens)
 
-  def get_title_tags(self, title,  person_names):
+  def get_title_tags(self, title):
     # If a person or place is in the title, tag it
     title_pos_tokens = self.tokenize_part_of_speech(title)
     filtered_title_tokens = self.filter_and_clean(title_pos_tokens)
-    cities = self.config['texas_cities']
-    counties = self.config['texas_counties']
-    tags = list()
+    title_tags = list()
     for title_token in filtered_title_tokens:
-      for name in person_names:
-        if title_token[0] in name and not name in tags:
-          tags.append(name)
-    for city in cities:
-      if city in title and not city in tags:
-        tags.append(city)
-    for county in counties:
-      if county in title and not county in tags:
-        tags.append(county)
-    return(tags)
+      for name in self.person_names:
+        if title_token[0] in name and not name in title_tags:
+          title_tags.append(name)
+    for city in self.cities:
+      if city in title and not city in title_tags:
+        title_tags.append(city)
+    for county in self.counties:
+      if county in title and not county in title_tags:
+        title_tags.append(county)
+    return title_tags
 
-  def get_body_tags(self, pos_tokens, person_names):
-    article_pos_tokens = self.group_proper_nouns(article_pos_tokens)
-    filtered_article_pos_tokens = self.filter_and_clean(article_pos_tokens)
-    words_sorted_by_freq = self.sort_dict_by_frequency(self.get_word_frequencies(filtered_article_pos_tokens, person_names))
+  def get_body_tags(self, body_pos_tokens):
+    body_tags = list()
+    body_pos_tokens = self.group_proper_nouns(body_pos_tokens)
+    filtered_body_pos_tokens = self.filter_and_clean(body_pos_tokens)
+    words_sorted_by_freq = self.sort_dict_by_frequency(self.get_word_frequencies(filtered_body_pos_tokens, self.person_names))
+    # Topic Tags
+    tag_keyword_lists = self.config["tag_keyword_lists"]
+    tag_frequency_dict = {}
+    for frequency, wordlist in words_sorted_by_freq.items():
+      for word in wordlist:
+        #People and Place Tags
+        if frequency >= 5 and (word in self.cities or word in self.counties or word in self.person_names) and not word in body_tags:
+          #Place Tags
+          body_tags.append(word)
+        #Topic Tags
+        for tag, keyword_list in tag_keyword_lists.items():
+          if word in keyword_list:
+            if not tag in tag_frequency_dict.keys():
+              tag_frequency_dict[tag] = frequency
+            else:
+              tag_frequency_dict[tag] += frequency
+    tags_sorted_by_freq = self.sort_dict_by_frequency(tag_frequency_dict)
+    for frequency, tag_list in tags_sorted_by_freq.items():
+      if frequency >= 10:
+        for tag in tag_list:
+          body_tags.append(tag)
+    return body_tags
+
 
   def extract_persons(self, pos_tokens):
     '''NLTK's name recognition will try to classify proper noun phrases as persons, organizations, places, or 'other' (GPE). However, it doesn't work that well except for persons, and I've added some additional rules to handle common misclassifications.'''
@@ -75,7 +97,6 @@ class Tagger_Class:
                   skip_adding_name = True
               if not skip_adding_name:
                 full_names.append(noun_phrase)
-    print(full_names)
     return full_names
 
   def filter_and_clean(self, pos_tokens):
@@ -136,7 +157,7 @@ class Tagger_Class:
           singular_word = inflector.singular_noun(current_word)
           if isinstance(singular_word, str):
             current_word = singular_word
-        if not current_word.isupper() and not current_word.islower():
+        if len(current_word.split()) < 2 and not current_word.isupper() and not current_word.islower():
           current_word = current_word[0].lower() + current_word[1:]
         if current_word in frequency_dict:
           frequency_dict[current_word] += 1
@@ -153,10 +174,10 @@ class Tagger_Class:
       else:
           words_sorted_by_freq[frequency] = [word]
     words_sorted_by_freq = collections.OrderedDict(sorted(words_sorted_by_freq.items(), reverse=True))
-    print("---------")
-    for frequency, wordlist in words_sorted_by_freq.items():
-      print(str(frequency) + " --> " +", ".join(wordlist))
-    print("---------")
+    # print("---------")
+    # for frequency, wordlist in words_sorted_by_freq.items():
+    #   print(str(frequency) + " --> " +", ".join(wordlist))
+    # print("---------")
     return words_sorted_by_freq
 
 

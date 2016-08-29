@@ -16,11 +16,8 @@ class Tagger_Class:
   def tag(self, article, title):
     article_pos_tokens = self.tokenize_part_of_speech(article)
     person_names = self.extract_persons(article_pos_tokens)
-    article_pos_tokens = self.group_proper_nouns(article_pos_tokens)
-    filtered_article_pos_tokens = self.filter_and_clean(article_pos_tokens)
-    words_sorted_by_freq = self.sort_dict_by_frequency(self.get_word_frequencies(filtered_article_pos_tokens, person_names))
     title_tags = self.get_title_tags(title, person_names)
-    # body_tags = self.get_body_tags()
+    body_tags = self.get_body_tags(article_pos_tokens, person_names)
     # place_tags = self.get_place_tags(words_sorted_by_freq)
     # topic_tags = self.get_topic_tags(words_sorted_by_freq)
 
@@ -42,6 +39,11 @@ class Tagger_Class:
       if county in title and not county in tags:
         tags.append(county)
     return(tags)
+
+  def get_body_tags(self, pos_tokens, person_names):
+    article_pos_tokens = self.group_proper_nouns(article_pos_tokens)
+    filtered_article_pos_tokens = self.filter_and_clean(article_pos_tokens)
+    words_sorted_by_freq = self.sort_dict_by_frequency(self.get_word_frequencies(filtered_article_pos_tokens, person_names))
 
   def extract_persons(self, pos_tokens):
     '''NLTK's name recognition will try to classify proper noun phrases as persons, organizations, places, or 'other' (GPE). However, it doesn't work that well except for persons, and I've added some additional rules to handle common misclassifications.'''

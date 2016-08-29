@@ -12,21 +12,36 @@ class Tagger_Class:
     self.config = json.load(open("config.json"))
     return
 
-  def tag(self, article):
-    pos_tokens = self.tokenize_part_of_speech(article)
-    full_names = self.extract_persons(pos_tokens)
-    pos_tokens = self.group_proper_nouns(pos_tokens)
-    # filtered_pos_tokens, multiword_proper_nouns = self.group_proper_nouns(pos_tokens)
-    filtered_pos_tokens = self.filter_and_clean(pos_tokens)
-    words_sorted_by_freq = self.sort_dict_by_frequency(self.get_word_frequencies(filtered_pos_tokens, full_names))
-    name_tags = self.get_name_tags(words_sorted_by_freq, full_names)
+  def tag(self, article, title):
+    article_pos_tokens = self.tokenize_part_of_speech(article)
+    person_names = self.extract_persons(article_pos_tokens)
+    article_pos_tokens = self.group_proper_nouns(article_pos_tokens)
+    filtered_article_pos_tokens = self.filter_and_clean(article_pos_tokens)
+    words_sorted_by_freq = self.sort_dict_by_frequency(self.get_word_frequencies(filtered_article_pos_tokens, person_names))
+    title_tags = self.get_title_tags(title, person_names)
+    print(title)
+    print(title_tags)
     # place_tags = self.get_place_tags(words_sorted_by_freq)
     # topic_tags = self.get_topic_tags(words_sorted_by_freq)
 
-  def get_name_tags(self, words_sorted_by_freq, full_names):
-    distinct_frequencies = len(words_sorted_by_freq.keys())
-    for freq, wordlist in words_sorted_by_freq.items():
-      print(freq)
+  def get_title_tags(self, title,  person_names):
+    # If a person or place is in the title, tag it
+    title_pos_tokens = self.tokenize_part_of_speech(title)
+    filtered_title_tokens = self.filter_and_clean(title_pos_tokens)
+    cities = self.config['texas_cities']
+    counties = self.config['texas_counties']
+    tags = list()
+    for title_token in filtered_title_tokens:
+      for name in person_names:
+        if title_token[0] in name and not name in tags:
+          tags.append(name)
+    for city in cities:
+      if city in title and not city in tags:
+        tags.append(city)
+    for county in counties:
+      if county in title and not county in tags:
+        tags.append(county)
+    return(tags)
 
   def extract_persons(self, pos_tokens):
     '''NLTK's name recognition will try to classify proper noun phrases as persons, organizations, places, or 'other' (GPE). However, it doesn't work that well except for persons, and I've added some additional rules to handle common misclassifications.'''
@@ -41,8 +56,8 @@ class Tagger_Class:
           for word in noun_phrase_list_copy:
             if word in name_filter:
               noun_phrase_as_list.remove(word)
-            last_word = noun_phrase_as_list[-1]
           if len(noun_phrase_as_list) > 0 and not noun_phrase_as_list[-1] in place_filter:
+            last_word = noun_phrase_as_list[-1]
             if len(last_word) > 2 and last_word[-2:] == "'s":
               # Strip the 's from this name'
               noun_phrase_as_list[-1] = last_word[:-2]
@@ -170,11 +185,9 @@ class Tagger_Class:
           combo_token = ("","")
     return processed_pos_tokens #, multiword_proper_nouns
 
-  def tokenize_part_of_speech(self, article):
-    # TODO fix Trump's so same as Trump
-    # article = article.replace("Trump's", "Drumpf")
-    words = nltk.word_tokenize(article)
-    pos_tokens = nltk.pos_tag(words)
+  def tokenize_part_of_speech(self, text):
+    tokens = nltk.word_tokenize(text)
+    pos_tokens = nltk.pos_tag(tokens)
     return pos_tokens
 
 

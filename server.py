@@ -2,6 +2,7 @@
 
 from flask import Flask, request, render_template
 from tagger import Tagger_Class as Tagger
+import json
 
 app = Flask(__name__)
 
@@ -11,13 +12,9 @@ def index():
 
 @app.route("/tag", methods=['POST'])
 def tag():
-    article = request.get_data().decode(encoding='UTF-8')
+    data= json.loads(request.get_data().decode(encoding='UTF-8'))
     tagger = Tagger()
-    tagger.tag(article)
-    # wordcount = int(request.args.get('wordcount'))
-    # format = request.args.get('format')
-    # return markov.generate_output(clean(, format), wordcount, format)
-
+    tagger.tag(data['article'], data['title'])
 
 if __name__ == '__main__':
     app.run(

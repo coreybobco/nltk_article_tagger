@@ -4,9 +4,9 @@
   #input_container {float:left; margin-bottom:10px; }
   #input_container { margin-bottom:10px; }
   textarea { display: inline-block; vertical-align: middle; width:550px }
-  #header { width: 1280px; margin-bottom: 20px;}
+  #header { width: 980px; margin-bottom: 20px;}
   #wordcount { width:50px; margin-bottom: 8px; }
-  #title { font: bold italic 32px Georgia, serif; margin: 8px 0px 0px -10px; text-align: center; }
+  #title { font: bold italic 32px Georgia, serif; margin: 8px 0px 0px 5px;}
   .subtitle { font: italic 15px Georgia, serif;}
   #attribution { float:right; clear:right; margin: -10px 36px 15px 0px }
   .divider { font: bold 14px/30px Georgia, sans; text-align: center; vertical-align: top; margin-top:160px; margin-left:5px; }

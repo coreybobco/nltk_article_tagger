@@ -50,14 +50,6 @@
 		"stay", 
 		"stays"
 	],
-	"place_filter" : [
-		"College",
-		"City",
-		"County",
-		"District",
-		"School",
-		"University"
-	],
 	"name_filter" : [
 		"Democrat",
 		"Democratic",
@@ -181,6 +173,9 @@
 			"Civil Rights Act"
 		]
 	},
+	"tag_filter": [
+		"School District"
+	],
 	"texas_cities" : [
 		"Houston",
 		"San Antonio",

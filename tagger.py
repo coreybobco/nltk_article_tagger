@@ -6,6 +6,7 @@ import os
 import re
 import types
 import nltk
+from nltk import wordnet
 
 class Tagger_Class:
   def __init__(self):
@@ -19,8 +20,7 @@ class Tagger_Class:
     filtered_article_pos_tokens = self.filter_and_clean(article_pos_tokens)
     words_sorted_by_freq = self.sort_dict_by_frequency(self.get_word_frequencies(filtered_article_pos_tokens, person_names))
     title_tags = self.get_title_tags(title, person_names)
-    print(title)
-    print(title_tags)
+    # body_tags = self.get_body_tags()
     # place_tags = self.get_place_tags(words_sorted_by_freq)
     # topic_tags = self.get_topic_tags(words_sorted_by_freq)
 
